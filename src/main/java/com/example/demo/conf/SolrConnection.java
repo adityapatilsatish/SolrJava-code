@@ -5,10 +5,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrRequest.METHOD;
 import org.apache.solr.client.solrj.impl.CloudHttp2SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.client.solrj.impl.Http2SolrClient.Builder;
+import org.apache.solr.common.params.SolrParams;
+import org.apache.solr.common.params.ModifiableSolrParams;
 
 @Configuration
 public class SolrConnection {
@@ -18,7 +24,7 @@ public class SolrConnection {
 	@Autowired
     private ApplicationConfig config;
 	
-	public CloudSolrClient SolrConnection() {
+	public CloudSolrClient SolrConnection(String collection) {
 		
 		
 		
@@ -31,7 +37,7 @@ public class SolrConnection {
 		}
 		
 		final CloudSolrClient client = new CloudSolrClient.Builder(solrBaseUrls).build();
-		client.setDefaultCollection("ecommerce");
+		client.setDefaultCollection(collection);
 		return client;
 		
 	}
@@ -61,6 +67,15 @@ public class SolrConnection {
 		}
 
 		return client;		 
+		
+	}
+	
+public Http2SolrClient SolrQueryConnection(String collection) {
+		
+	String serverBaseUrl = "http://localhost:8983/solr";
+	Http2SolrClient solrQueryClient = new Http2SolrClient.Builder(serverBaseUrl).build();
+	
+	return solrQueryClient;
 		
 	}
 
